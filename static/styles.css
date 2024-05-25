@@ -261,13 +261,19 @@ h2 {
 }
 
 .add-button {
-    margin-bottom: 20px; /* Adiciona um espaço abaixo do botão */
+    margin-bottom: 20px;
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    display: block; /* Torna o botão um bloco para ocupar toda a largura */
+    display: block;
     margin: 0 auto;
+}
+
+.pokemon-img {
+    width: 30%;
+    height: 30%; 
+    object-fit: cover;
 }

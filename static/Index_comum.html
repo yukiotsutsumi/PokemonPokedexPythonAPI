@@ -66,25 +66,39 @@
             return response.ok;
         }
 
+        function imageExists(url, callback) {
+        const img = new Image();
+        img.onload = () => callback(true);
+        img.onerror = () => callback(false);
+        img.src = url;
+        }
+
         // Função para carregar os Pokemons do time
         async function carregarPokemonsDoTime() {
             const response = await fetch('/team');
             const data = await response.json();
             const pokemonList = document.getElementById('pokemon-list');
             pokemonList.innerHTML = '';
+            
             data.team.forEach(pokemon => {
-                const row = `
-                    <tr>
-                        <td><img src="pokemon_gifs/${pokemon.id}.gif" alt="${pokemon.nome}"></td>
-                        <td>${pokemon.nome}</td>
-                        <td>${pokemon.apelido}</td>
-                        <td>
-                            <button onclick="atualizarApelido(${pokemon.id}, '${pokemon.apelido}')" class="option-button">Alterar Apelido</button>
-                            <button onclick="removerPokemonDoTime(${pokemon.id})" class="option-button">Remover</button>
-                        </td>
-                    </tr>
-                `;
-                pokemonList.innerHTML += row;
+                const gifUrl = `pokemon_gifs/${pokemon.id}.gif`;
+                const imgUrl = `img/${pokemon.id}.png`;
+
+                imageExists(gifUrl, function(exists) {
+                    const imgSrc = exists ? gifUrl : imgUrl;
+                    const row = `
+                        <tr>
+                            <td><img src="${imgSrc}" alt="${pokemon.nome}" class="pokemon-img"></td>
+                            <td>${pokemon.nome}</td>
+                            <td>${pokemon.apelido}</td>
+                            <td>
+                                <button onclick="atualizarApelido(${pokemon.id}, '${pokemon.apelido}')" class="option-button">Alterar Apelido</button>
+                                <button onclick="removerPokemonDoTime(${pokemon.id})" class="option-button">Remover</button>
+                            </td>
+                        </tr>
+                    `;
+                    pokemonList.innerHTML += row;
+                });
             });
         }
 
