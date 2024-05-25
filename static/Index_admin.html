@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/static/session_monitor.js"></script>
+</head>
+<body>
+    <div class="logout-container">
+        <form id="logout-form" action="/logout" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+    <h1 class="title">Pokedex</h1>
+    <div class="logout-container">
+    </div>
+    <div class="options-container">
+        <div class="option" onclick="window.location.href='AdicionarPokemon.html'">
+            <img src="img/1.png" alt="Adicionar Pokémon">
+            <p>Adicionar Pokémon</p>
+        </div>
+        <div class="option" onclick="window.location.href='AlterarPokemon.html'">
+            <img src="img/4.png" alt="Alterar Pokémon">
+            <p>Alterar Pokémon</p>
+        </div>
+        <div class="option" onclick="window.location.href='BuscarPokemon.html'">
+            <img src="img/7.png" alt="Buscar Pokémon">
+            <p>Buscar Pokémon</p>
+        </div>
+        <div class="option" onclick="window.location.href='DeletarPokemon.html'">
+            <img src="img/25.png" alt="Deletar Pokémon">
+            <p>Deletar Pokémon</p>
+        </div>
+    </div>
+</body>
+</html>

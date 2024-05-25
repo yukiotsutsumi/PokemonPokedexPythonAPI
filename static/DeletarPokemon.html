@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deletar Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index_admin.html" class="back-button"> < Voltar</a> 
+        <h1 class="title">Deletar Pokémon</h1>
+        <form id="deleteForm">
+            <label for="pokemonId">ID do Pokémon:</label>
+            <input type="number" id="pokemonId" name="pokemonId" required>
+            <button type="submit">Deletar</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('deleteForm');
+        const responseDiv = document.getElementById('response');
+    
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+    
+            const pokemonId = form.pokemonId.value;
+    
+            const response = await fetch(`http://127.0.0.1:5000/pokemon/${pokemonId}`, {
+                method: 'DELETE'
+            });
+    
+            if (response.ok) {
+                alert('Pokémon excluído com sucesso.');
+                form.pokemonId.value = '';
+            } else {
+                alert('Erro ao excluir Pokémon. Pokemon com o Id digitado não existe.');
+            }
+        });
+    </script>    
+</body>
+</html>

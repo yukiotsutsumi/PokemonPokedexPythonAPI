@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index_admin.html" class="back-button"> < Voltar</a> 
+        <h1 class="title">Adicionar Novo Pokémon</h1>
+        <form id="pokemonForm">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="tipo1">Tipo 1:</label>
+                <select id="tipo1" name="tipo1" required>
+                    <option value="Normal">Normal</option>
+                    <option value="Lutador">Lutador</option>
+                    <option value="Voador">Voador</option>
+                    <option value="Venenoso">Venenoso</option>
+                    <option value="Terra">Terra</option>
+                    <option value="Rocha">Rocha</option>
+                    <option value="Inseto">Inseto</option>
+                    <option value="Fantasma">Fantasma</option>
+                    <option value="Metálico">Metálico</option>
+                    <option value="Fogo">Fogo</option>
+                    <option value="Água">Água</option>
+                    <option value="Grama">Grama</option>
+                    <option value="Elétrico">Elétrico</option>
+                    <option value="Psíquico">Psíquico</option>
+                    <option value="Gelo">Gelo</option>
+                    <option value="Dragão">Dragão</option>
+                    <option value="Noturno">Noturno</option>
+                    <option value="Fada">Fada</option>
+                </select>
+            
+                <label for="tipo2">Tipo 2:</label>
+                <select id="tipo2" name="tipo2">
+                    <option value="">Não possui segundo tipo</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Lutador">Lutador</option>
+                    <option value="Voador">Voador</option>
+                    <option value="Venenoso">Venenoso</option>
+                    <option value="Terra">Terra</option>
+                    <option value="Rocha">Rocha</option>
+                    <option value="Inseto">Inseto</option>
+                    <option value="Fantasma">Fantasma</option>
+                    <option value="Metálico">Metálico</option>
+                    <option value="Fogo">Fogo</option>
+                    <option value="Água">Água</option>
+                    <option value="Grama">Grama</option>
+                    <option value="Elétrico">Elétrico</option>
+                    <option value="Psíquico">Psíquico</option>
+                    <option value="Gelo">Gelo</option>
+                    <option value="Dragão">Dragão</option>
+                    <option value="Noturno">Noturno</option>
+                    <option value="Fada">Fada</option>
+                </select>
+
+                <label for="vida">Vida:</label>
+                <input type="number" id="vida" name="vida" required>
+
+                <label for="ataque">Ataque:</label>
+                <input type="number" id="ataque" name="ataque" required>
+
+                <label for="defesa">Defesa:</label>
+                <input type="number" id="defesa" name="defesa" required>
+
+                <label for="ataqueEspecial">Ataque Especial:</label>
+                <input type="number" id="ataqueEspecial" name="ataqueEspecial" required>
+
+                <label for="defesaEspecial">Defesa Especial:</label>
+                <input type="number" id="defesaEspecial" name="defesaEspecial" required>
+
+                <label for="velocidade">Velocidade:</label>
+                <input type="number" id="velocidade" name="velocidade" required>
+
+                <label for="imagem">Foto do Pokémon:</label>
+                <input type="file" id="imagem" name="imagem" accept="image/png, image/jpeg, image/jpg">
+
+            <button type="submit">Adicionar Pokémon</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('pokemonForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+    
+            const tipo1 = this.querySelector('#tipo1').value;
+            const tipo2 = this.querySelector('#tipo2').value;
+    
+            if (tipo1 === tipo2) {
+                alert('Os tipos não podem ser iguais.');
+                return;
+            }
+    
+            const formData = {
+                Nome: this.querySelector('#nome').value,
+                Tipo1: tipo1,
+                Tipo2: tipo2,
+                base: {
+                    Vida: parseInt(this.querySelector('#vida').value),
+                    Ataque: parseInt(this.querySelector('#ataque').value),
+                    Defesa: parseInt(this.querySelector('#defesa').value),
+                    AtaqueEspecial: parseInt(this.querySelector('#ataqueEspecial').value),
+                    DefesaEspecial: parseInt(this.querySelector('#defesaEspecial').value),
+                    Velocidade: parseInt(this.querySelector('#velocidade').value)
+                }
+            };
+    
+            fetch('/pokemon', {
+                method: 'POST',
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.status === 400) {
+                    throw new Error('Dados inválidos, cheque novamente os campos antes de enviar');
+                }
+                if (response.status === 201) {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.pokemon_id) {
+                    alert('Pokémon adicionado com sucesso!');
+    
+                    const formDataImage = new FormData();
+                    formDataImage.append('imagem', this.querySelector('#imagem').files[0]);
+                    formDataImage.append('pokemon_id', data.pokemon_id);
+    
+                    return fetch('/pokemon-image', {
+                        method: 'POST',
+                        body: formDataImage
+                    });
+                }
+            })
+            .then(response => {
+                if (response && response.status === 201) {
+                    console.log('Imagem do Pokémon adicionada com sucesso!');
+                    this.reset();
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error.message);
+                alert('Erro ao adicionar Pokémon');
+            });
+        });
+    </script>   
+</body>
+</html>

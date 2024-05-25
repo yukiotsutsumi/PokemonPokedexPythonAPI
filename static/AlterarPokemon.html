@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index_admin.html" class="back-button"> < Voltar</a> 
+        <h1 class="title">Alterar Pokémon</h1>
+        <h4 class="subtitle">Preencha apenas os campos que deseja alterar</h4>
+        <form id="updateForm">
+            <label for="pokemonId">ID do Pokémon:</label>
+            <input type="number" id="pokemonId" name="pokemonId" required>
+            <br>
+            <label for="vida">Vida:</label>
+            <input type="number" id="vida" name="vida">
+            <br>
+            <label for="ataque">Ataque:</label>
+            <input type="number" id="ataque" name="ataque">
+            <br>
+            <label for="defesa">Defesa:</label>
+            <input type="number" id="defesa" name="defesa">
+            <br>
+            <label for="ataqueEspecial">Ataque Especial:</label>
+            <input type="number" id="ataqueEspecial" name="ataqueEspecial">
+            <br>
+            <label for="defesaEspecial">Defesa Especial:</label>
+            <input type="number" id="defesaEspecial" name="defesaEspecial">
+            <br>
+            <label for="velocidade">Velocidade:</label>
+            <input type="number" id="velocidade" name="velocidade">
+            <br>
+            <button type="submit">Atualizar</button>
+        </form>
+    </div>
+
+    <div id="response"></div>
+
+    <script>
+        const form = document.getElementById('updateForm');
+        const responseDiv = document.getElementById('response');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const pokemonId = form.pokemonId.value;
+            const vida = form.vida.value;
+            const ataque = form.ataque.value;
+            const defesa = form.defesa.value;
+            const ataqueEspecial = form.ataqueEspecial.value;
+            const defesaEspecial = form.defesaEspecial.value;
+            const velocidade = form.velocidade.value;
+
+            if (!pokemonId) {
+                alert('Por favor, insira o ID do Pokémon.');
+                return;
+            }
+
+            const response = await fetch(`http://127.0.0.1:5000/pokemon/${pokemonId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    base: {
+                        Vida: vida,
+                        Ataque: ataque,
+                        Defesa: defesa,
+                        AtaqueEspecial: ataqueEspecial,
+                        DefesaEspecial: defesaEspecial,
+                        Velocidade: velocidade
+                    }
+                })
+            });
+
+            if (response.status === 200) {
+                alert('Pokémon atualizado com sucesso!');
+            } else if (response.status === 404) {
+                alert('Pokémon não encontrado.');
+            } else if (response.status === 500) {
+                alert('Erro interno do servidor. Por favor, tente novamente mais tarde.');
+            } else {
+                alert('Erro desconhecido. Por favor, tente novamente.');
+            }
+
+            const data = await response.json();
+            responseDiv.textContent = JSON.stringify(data, null, 2);
+        });
+    </script>
+</body>
+</html>

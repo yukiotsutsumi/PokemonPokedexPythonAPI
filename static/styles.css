@@ -1,0 +1,273 @@
+/*Fonte*/
+@font-face {
+    font-family: 'Pokemon';
+    src: url('font/PokemonSolidNormal-xyWR.ttf') format('truetype'),
+}
+
+.title {
+    font-family: 'Pokemon', sans-serif;
+    color: yellow;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+}
+
+.subtitle {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/*Body das páginas*/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5dc;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: 5% auto;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 5%;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/*Opções index*/
+.options-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10%;
+}
+
+.option {
+    width: 20%;
+    height: 20vh;
+    background-color: #ffd700;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 2%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.option p {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #000;
+}
+
+.option img {
+    width: 50%;
+    height: auto;
+    margin-bottom: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+/*GET*/
+.pokemon-details {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.pokemon-info {
+    flex: 1 1 50%;
+    padding: 0 10px;
+}
+
+.pokemon-image {
+    flex: 1 1 50%;
+    padding: 0 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.image-container {
+    margin: 0 10px;
+    text-align: center;
+}
+
+.pokemon-image img {
+    max-width: 100%;
+    height: auto;
+    width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+/*select boxes do adicionar pokemon*/
+select {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 16px; 
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+}
+
+select:hover {
+    border-color: #007bff;
+}
+
+/* Estilos para o campo de upload de foto */
+input[type="file"] {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px; 
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: #007bff;
+}
+
+/*botao voltar*/
+.back-button {
+    text-decoration: line;
+    color: blue;
+    font-weight: bold;
+}
+
+/* Estilos para a página de login */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    text-align: center;
+}
+
+.form-container:not(:first-child) {
+    margin-left: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+.form-container input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background-color: #0056b3;
+}
+
+.logout-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.logout-btn {
+    background-color: #ff0000;
+    color: #ffffff;
+    border: 1px;
+    padding: 10px 20px;
+    cursor: pointer; 
+}
+
+.pokemon-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.pokemon-table th,
+.pokemon-table td {
+    border: 1px solid black;
+    padding: 12px;
+    text-align: center;
+}
+
+.add-button {
+    margin-bottom: 20px; /* Adiciona um espaço abaixo do botão */
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block; /* Torna o botão um bloco para ocupar toda a largura */
+    margin: 0 auto;
+}

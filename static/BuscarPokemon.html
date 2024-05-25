@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <a href="index_admin.html" class="back-button"> < Voltar</a> 
+        <h1 class="title">Buscar Pokémon</h1>
+        <form id="searchForm">
+            <label for="pokemonName">Id do Pokémon:</label>
+            <input type="number" id="pokemonName" name="pokemonName" required>
+            <button type="submit">Buscar</button>
+        </form>
+
+        <div id="response"></div>
+        <audio id="pokemonCry" controls style="display: none;"></audio>
+    </div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const responseDiv = document.getElementById('response');
+        const audioElement = document.getElementById('pokemonCry');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pokemonId = form.pokemonName.value;
+            const response = await fetch(`http://127.0.0.1:5000/pokemon/${pokemonId}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.pokemon) {
+                    const pokemon = data.pokemon;
+                    const imageUrl = `img/${pokemon.id}.png`;     
+                    const soundUrl = `cries/${pokemon.id}.ogg`;
+                    const pokemongif = `pokemon_gifs/${pokemon.id}.gif`
+
+                    audioElement.src = soundUrl;
+                    audioElement.play();
+
+                    responseDiv.innerHTML = `
+                        <div class="pokemon-details">
+                            <div class="pokemon-info">
+                                <p><strong>ID:</strong> ${pokemon.id}</p>
+                                <p><strong>Nome:</strong> ${pokemon.nome}</p>
+                                <p><strong>Tipo 1:</strong> ${pokemon.tipo1}</p>
+                                <p><strong>Tipo 2:</strong> ${pokemon.tipo2 || 'Não possui segundo tipo'}</p>
+                                <p><strong>Vida:</strong> ${pokemon.base.vida}</p>
+                                <p><strong>Ataque:</strong> ${pokemon.base.ataque}</p>
+                                <p><strong>Defesa:</strong> ${pokemon.base.defesa}</p>
+                                <p><strong>Ataque Especial:</strong> ${pokemon.base.ataqueEspecial}</p>
+                                <p><strong>Defesa Especial:</strong> ${pokemon.base.defesaEspecial}</p>
+                                <p><strong>Velocidade:</strong> ${pokemon.base.velocidade}</p>
+                            </div>
+                            <div class="pokemon-image">
+                                <div class="image-container">
+                                    <h4> img </h4>
+                                    <img src="${imageUrl}" alt="${pokemon.nome}">
+                                </div>
+                                <div class="image-container">
+                                    <h4> gif </h4>
+                                    <img src="${pokemongif}" alt="${pokemon.nome}">
+                                </div>
+                            </div>
+                        </div>`;
+                } else {
+                    responseDiv.innerHTML = '';
+                    alert('Pokémon não encontrado');
+                }
+            } else {
+                responseDiv.innerHTML = ''; 
+                alert('Pokémon não encontrado');
+            }
+        });
+    </script>
+</body>
+</html>

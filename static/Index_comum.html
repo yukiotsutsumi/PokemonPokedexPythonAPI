@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Equipe</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="/static/session_monitor.js"></script>
+</head>
+<body>
+    <div class="logout-container">
+        <form id="logout-form" action="/logout" method="post">
+            <button type="submit" class="logout-btn">Logout</button>
+        </form>
+    </div>
+    <h1 class="title">Minha Equipe</h1>
+    
+    <button onclick="adicionarPokemonAoTime()" class="add-button">Adicionar Pokemon ao time</button>
+
+    <table class="pokemon-table">
+        <thead>
+            <tr>
+                <th>GIF</th>
+                <th>Nome</th>
+                <th>Apelido</th>
+                <th>Opções</th>
+            </tr>
+        </thead>
+        <tbody id="pokemon-list">
+            <!-- Linhas da tabela serão adicionadas dinamicamente aqui -->
+        </tbody>
+    </table>
+    
+    <script>
+        async function adicionarPokemonAoTime() {
+            const pokemonId = prompt('Digite o ID do Pokemon que deseja adicionar:');
+ 
+            if (pokemonId !== null) {
+                const pokemonExists = await verificarExistenciaPokemon(pokemonId);
+                if (!pokemonExists) {
+                    alert('O ID do Pokemon fornecido não existe.');
+                    return;
+                }
+                
+                const apelido = prompt('Digite o apelido do Pokemon:');
+                if (apelido !== null) {
+                    const response = await fetch('/team/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ pokemon_id: pokemonId, apelido: apelido })
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            }
+        }
+
+        async function verificarExistenciaPokemon(pokemonId) {
+            const response = await fetch(`/pokemon/${pokemonId}`);
+            return response.ok;
+        }
+
+        // Função para carregar os Pokemons do time
+        async function carregarPokemonsDoTime() {
+            const response = await fetch('/team');
+            const data = await response.json();
+            const pokemonList = document.getElementById('pokemon-list');
+            pokemonList.innerHTML = '';
+            data.team.forEach(pokemon => {
+                const row = `
+                    <tr>
+                        <td><img src="pokemon_gifs/${pokemon.id}.gif" alt="${pokemon.nome}"></td>
+                        <td>${pokemon.nome}</td>
+                        <td>${pokemon.apelido}</td>
+                        <td>
+                            <button onclick="atualizarApelido(${pokemon.id}, '${pokemon.apelido}')" class="option-button">Alterar Apelido</button>
+                            <button onclick="removerPokemonDoTime(${pokemon.id})" class="option-button">Remover</button>
+                        </td>
+                    </tr>
+                `;
+                pokemonList.innerHTML += row;
+            });
+        }
+
+        // Função para remover Pokemon do time
+        async function removerPokemonDoTime(pokemonId) {
+            if (confirm('Tem certeza que deseja remover este Pokemon do time?')) {
+                const response = await fetch(`/team/remove`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ pokemon_id: pokemonId })
+                });
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                }
+            }
+        }
+
+        // Função para atualizar apelido do Pokemon no time
+        async function atualizarApelido(pokemonId, apelidoAtual) {
+            const novoApelido = prompt('Digite o novo apelido:', apelidoAtual);
+            if (novoApelido !== null) {
+                const response = await fetch(`/team/update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ pokemon_id: pokemonId, apelido: novoApelido })
+                });
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    const data = await response.json();
+                    alert(data.message);
+                }
+            }
+        }
+
+        window.onload = carregarPokemonsDoTime;
+    </script>
+</body>
+</html>
