@@ -1,9 +1,3 @@
-O código, assim que executado, cria automaticamente o banco de dados na pasta do projeto.
-
-Usuário administrador - User:admin senha:admin
-Usuário comum - User:comum senha:comum
-Todo usuário novo criado é automaticamente comum.
-
 -- Script para criar o banco de dados
 CREATE DATABASE IF NOT EXISTS pokemon_db;
 USE pokemon_db;
@@ -35,3 +29,13 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL,
     role TEXT NOT NULL
 );
+
+-- Script para criar a tabela 'team'
+CREATE TABLE IF NOT EXISTS team (
+                        username TEXT,
+                        pokemon_id INTEGER,
+                        apelido TEXT,
+                        FOREIGN KEY (username) REFERENCES users(username),
+                        FOREIGN KEY (pokemon_id) REFERENCES pokemon(Id),
+                        PRIMARY KEY (username, pokemon_id)
+                    );
