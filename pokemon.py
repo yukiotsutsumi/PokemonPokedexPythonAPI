@@ -12,6 +12,7 @@ app = Flask("pokemon")
 app.secret_key = 'supersecretkey'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=7)
 
+#Criar tabelas
 def create_database():
     conn = sqlite3.connect('pokemon.db')
     conn.execute("PRAGMA foreign_keys = ON")
@@ -58,6 +59,7 @@ def create_database():
     conn.commit()
     conn.close()
 
+#Popular tabela Tipo
 def populate_tipo_table():
     conn = sqlite3.connect('pokemon.db')
     cursor = conn.cursor()
@@ -70,6 +72,7 @@ def populate_tipo_table():
     conn.commit()
     conn.close()
 
+#Popular tabela Pokemons
 def populate_database():
     conn = sqlite3.connect('pokemon.db')
     cursor = conn.cursor()
@@ -101,6 +104,7 @@ def populate_database():
             conn.commit()
     conn.close()
 
+#Popular tabela users
 def populate_users_table():
     conn = sqlite3.connect('pokemon.db')
     cursor = conn.cursor()
@@ -127,6 +131,33 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+#Endpoints de rota
+@app.route('/')
+def index():
+    return redirect('/static/login.html')
+
+#Endpoint de Login
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        username = request.json['username']
+        password = request.json['password']
+
+        conn = sqlite3.connect('pokemon.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = cursor.fetchone()
+
+        if user and check_password_hash(user[1], password):
+            role = user[2]
+            session['username'] = username
+            session['role'] = role
+            return jsonify({'role': role}), 200
+        else:
+            return jsonify({'error': 'Nome de usuário ou senha inválidos'}), 401
+    except Exception as e:
+        return jsonify({'error': 'Erro ao fazer login'}), 500
+        
 # Endpoint para logout
 @app.route('/logout', methods=['POST'])
 def logout():
@@ -270,13 +301,6 @@ class PokemonImage:
             logging.error(f"Error uploading image: {e}")
             return jsonify({'error': 'Internal Server Error'}), 500
 
-#Endpoints de rota
-@app.route('/')
-def index():
-    return redirect('/static/login.html')
-
-#A partir daq ficam os endpoints admin:
-
 # Endpoint para registro de novos usuários
 @app.route('/registrar', methods=['POST'])
 def register():
@@ -303,27 +327,8 @@ def register():
     except Exception as e:
         return jsonify({'Erro': str(e)}), 500
 
-@app.route('/login', methods=['POST'])
-def login():
-    try:
-        username = request.json['username']
-        password = request.json['password']
-
-        conn = sqlite3.connect('pokemon.db')
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE username=?", (username,))
-        user = cursor.fetchone()
-
-        if user and check_password_hash(user[1], password):
-            role = user[2]
-            session['username'] = username
-            session['role'] = role
-            return jsonify({'role': role}), 200
-        else:
-            return jsonify({'error': 'Nome de usuário ou senha inválidos'}), 401
-    except Exception as e:
-        return jsonify({'error': 'Erro ao fazer login'}), 500
-
+# Endpoints do usuário admin:
+# Endpoint para adicionar pokemons novos
 @app.route('/pokemon', methods=['POST'])
 @login_required
 def add_pokemon():
@@ -350,6 +355,7 @@ def add_pokemon():
         logging.error(f"Erro: {e}")
         return '', 500
 
+# Endpoint para buscar pokemons
 @app.route('/pokemon/<int:pokemon_id>', methods=['GET'])
 @login_required
 def get_pokemon_por_id(pokemon_id):
@@ -382,6 +388,7 @@ def get_pokemon_por_id(pokemon_id):
         logging.error(f"Error: {e}")
         return jsonify({'mensagem': 'Erro ao obter Pokémon'}), 500
 
+# Endpoint para atualizar stats dos pokemons
 @app.route('/pokemon/<int:pokemon_id>', methods=['PUT'])
 @login_required
 def update_pokemon_by_id(pokemon_id):
@@ -397,6 +404,7 @@ def update_pokemon_by_id(pokemon_id):
         logging.error(f"Error: {e}")
         return '', 500 
 
+# Endpoint para deletar um pokemon do banco de dados
 @app.route('/pokemon/<int:pokemon_id>', methods=['DELETE'])
 @login_required
 def delete_pokemon(pokemon_id):
@@ -408,7 +416,7 @@ def delete_pokemon(pokemon_id):
     else:
         return '', 404
 
-
+# Endpoints do usuário comum:
 # Endpoint para adicionar Pokémon ao time do usuário comum
 @app.route('/team/add', methods=['POST'])
 @login_required
