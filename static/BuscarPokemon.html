@@ -35,10 +35,29 @@
                     const pokemon = data.pokemon;
                     const imageUrl = `img/${pokemon.id}.png`;     
                     const soundUrl = `cries/${pokemon.id}.ogg`;
-                    const pokemongif = `pokemon_gifs/${pokemon.id}.gif`
+                    const pokemongif = `pokemon_gifs/${pokemon.id}.gif`;
+
+                    // Verifica se o GIF ou a imagem está disponível
+                    const gifExists = await fetch(pokemongif).then(res => res.ok).catch(() => false);
+                    const imageExists = await fetch(imageUrl).then(res => res.ok).catch(() => false);
 
                     audioElement.src = soundUrl;
                     audioElement.play();
+
+                    let imageHtml = '<p>Não possui imagem ou GIF</p>';
+                    if (gifExists) {
+                        imageHtml = `
+                            <div class="image-container">
+                                <h4>GIF</h4>
+                                <img src="${pokemongif}" alt="${pokemon.nome}">
+                            </div>`;
+                    } else if (imageExists) {
+                        imageHtml = `
+                            <div class="image-container">
+                                <h4>IMG</h4>
+                                <img src="${imageUrl}" alt="${pokemon.nome}">
+                            </div>`;
+                    }
 
                     responseDiv.innerHTML = `
                         <div class="pokemon-details">
@@ -55,14 +74,7 @@
                                 <p><strong>Velocidade:</strong> ${pokemon.base.velocidade}</p>
                             </div>
                             <div class="pokemon-image">
-                                <div class="image-container">
-                                    <h4> img </h4>
-                                    <img src="${imageUrl}" alt="${pokemon.nome}">
-                                </div>
-                                <div class="image-container">
-                                    <h4> gif </h4>
-                                    <img src="${pokemongif}" alt="${pokemon.nome}">
-                                </div>
+                                ${imageHtml}
                             </div>
                         </div>`;
                 } else {
